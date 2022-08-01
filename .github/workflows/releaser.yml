@@ -1,0 +1,33 @@
+name: Releaser
+
+on:
+  push:
+    branches:
+      - main
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Zip Languages
+      run: zip -r lang.zip . -x ".git/*" ".github/*" "phpcs.xml" ".gitignore" "venv/" "*.zip"
+      
+    - name: List Files
+      run: ls
+      
+    - name: "Build & test"
+      run: |
+        echo "done!"
+        
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: false
+        title: "Builds"
+        files: |
+          lang.zip
+          *.properties
